@@ -22,6 +22,26 @@ httpe://exlixir-lang.org/blog/2019/01/14/elixir-v1-8-0-released/#time-zone-datab
 elixir hello.exs
 ```
 
+`iex`로 실행할때 폴더이름중에 한글이 포함되면 해당 폴더를 찾지 못하는 이슈가 있다.
+
+```log
+** (Code.LoadError) could not load /root/study/getting-started-elixir/따라해보기/6-1/times.exs. Reason: enoent
+    (elixir 1.15.5) lib/code.ex:2092: Code.find_file!/2
+    (elixir 1.15.5) lib/code.ex:1427: Code.require_file/2
+```
+
+```log
+c "times.exs"
+== Compilation error in file times.exs ==
+** (MatchError) no match of right hand side value: {:error, :enoent}
+    (elixir 1.15.5) lib/kernel/parallel_compiler.ex:378: anonymous fn/5 in Kernel.ParallelCompiler.spawn_workers/8
+** (CompileError) compile error
+    (iex 1.15.5) lib/iex/helpers.ex:182: IEx.Helpers.c/2
+    iex:4: (file)
+```
+
+경로상에 한글 폴더를 제외하기.
+
 ## 테스팅
 
 `ExUnit`을 사용하여 테스트코드를 작성하고, 해당 파일을 직접 실행한다.
