@@ -14,6 +14,14 @@ httpe://exlixir-lang.org/blog/2019/01/14/elixir-v1-8-0-released/#time-zone-datab
 - 숫자 < 아톰 < 레퍼런스 < 함수 < 포트 < 프로세스 ID < 튜플 < 맵 < 리스트 < 바이너리
   - nil이 아톰이므로 엘릭서에서는 숫자와 nul을 비교하면 항상 nil이 크다.
 
+## 프로젝트
+
+elixir와 phoenix를 같이 배우고있는데 피닉스는 `mix phx.new projectName`으로 만들게되고 단일 elixir 프로젝트는 `mix new projectName`으로 만들어지게된다.
+
+프로젝트를 만들고 모듈을 관리할때 node를 주력으로 사용했다보니까 packages.json에 추가하는 cli로 추가하고 관리하는게 편리해서 그런지 `mix.exs`에서 deps를 관리하는게 어색했다.
+
+프로젝트를 만들어서 실행하려면 `mix compile`후에 `iex`모드에 들어가서 해당 프로젝트의 함수들을 실행할 수 있다.
+
 ## 디버깅, 실행
 
 `.exs`파일을 바로 실행하는 방법
