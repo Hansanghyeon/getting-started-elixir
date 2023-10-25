@@ -158,3 +158,53 @@ iex(3)> s3 = %Subscriber{ name: "Mary", over_18: true, paid: true}
 ```
 
 구조체는 맵을 만들 떄와 똑같은 문법으로 만든다. `%`와 `{` 사이에 모듈의 이름을 추가로 넣기만 하면 된다. 구조체 내의 필드에 접근할 떄는 온점(.)이나 패턴 매칭을 사용한다.
+
+```iex
+iex(1)> s1 = %Subscriber{}
+%Subscriber{name: "", paid: false, over_18: false}
+iex(2)> s2 = %Subscriber{ name: "Dave" } 
+%Subscriber{name: "Dave", paid: false, over_18: false}
+iex(3)> s3 = %Subscriber{ name: "Mary", over_18: true, paid: true}
+%Subscriber{name: "Mary", paid: true, over_18: true}
+iex(4)> s3.name 
+"Mary"
+iex(5)> %Subscriber{name: a_name} = s3
+%Subscriber{name: "Mary", paid: true, over_18: true}
+iex(6)> a_name 
+"Mary"
+```
+
+구조체를 수정할 때도 맵을 수정하는 문법을 사용할 수 있다.
+
+```sh
+iex> s4 = %Subscriber{ s3 | name: "Marie"}
+%Subscriber{name: "Marie", over_18: true, paid: true}
+```
+
+구조체를 모듈 안에 정의하는 이유는 뭘까? 구조체에 특화된 연산이 필요하기 때문이다.
+
+```
+# iex defstruct1.exs
+Erlang/OTP 26 [erts-14.0.2] [source] [64-bit] [smp:32:8] [ds:32:8:10] [async-threads:1] [jit:ns]
+
+Interactive Elixir (1.15.5) - press Ctrl+C to exit (type h() ENTER for help)
+iex(1)> a1 = %Attendee{name: "Dave", over_18: true} 
+%Attendee{name: "Dave", paid: false, over_18: true}
+iex(2)> Attendee.may_attend_affter_party(a1) 
+false
+iex(3)> a2 = %Attendee{a1 | paid: true} 
+%Attendee{name: "Dave", paid: true, over_18: true}
+iex(4)> Attendee.may_attend_affter_party(a2) 
+true
+iex(5)> Attendee.print_vip_badge(a2) 
+Very cheap badge for Dave
+:ok
+iex(6)> a3 = %Attendee{} 
+%Attendee{name: "", paid: false, over_18: true}
+iex(7)> Attendee.print_vip_badge(a3) 
+** (RuntimeError) missing name for badge
+    defstruct1.exs:13: Attendee.print_vip_badge/1
+    iex:7: (file)
+```
+
+Attendee 구조체를 다루기 위해 같은 모듈에 정의된 함수를 호출한다는 점에 주목하자. 구조체는 다형성을 구현할 때 매우 중요한 개념이다.
