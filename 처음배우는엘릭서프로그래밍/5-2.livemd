@@ -1,0 +1,19 @@
+# 함수는 하나, 본문은 여러개
+
+문자열 내에 표현식을 삽입하는 방법은 `#{...}`을 사용해 표현식을 넣으면, 코드가 계산되어 그 실행 결과로 문자열이 대체된다.
+
+<!-- livebook:{"continue_on_error":true} -->
+
+```elixir
+handle_open = fn
+  {:ok, file} -> "First line: #{IO.read(file, :line)}"
+  {_, error} -> "Error: #{:file.format_error(error)}"
+end
+
+# 존재하는 파일을 연다.
+IO.puts(handle_open(File.open("Rakefile.bin")))
+# 존재하지 않는 파일을 연다.
+IO.puts(handle_open(File.open("nonexistent")))
+```
+
+livebook에서 파일을 오픈하는 방법은 아직 잘 모르겠다.

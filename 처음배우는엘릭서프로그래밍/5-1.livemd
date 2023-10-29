@@ -1,0 +1,78 @@
+# 함수와 패턴 매칭
+
+## Section
+
+`sum.(2,3)`을 호출하면 2를 a에 할당하고, 3을 b에 할당한다는 것을 쉽게 예상할 수 있다. 하지만 우리는 '할당'이라는 단어를 경계해야 한다. 엘릭서에는 할당문이 없다. 대신 값을 패턴에 매칭하려 한다(패턴 매칭과 할당에 관해서는 2장에서 살펴봤다.) 예를 들어 다음과 같은 코드가있다고 하자.
+
+```elixir
+a = 2
+```
+
+엘릭서에서는 2라는 값을 변수 a에 바인딩해 패턴 매칭한다. 이 과정은 sum함수가 호출될 떄도 동일하게 실행된다. 2와 3을 인자로 전달하면 인자는 파라미터 a,b에 패턴 매칭된다. 이 과정에서 a에 2가, b에 3이 들어간다. 다음과 동일한 것으로 볼 수 있다.
+
+```elixir
+{a, b} = {2, 3}
+```
+
+이는 함수를 호출할 때 패턴 매칭의 특성을 이용해 더 복잡한 매칭을 할 수도 있음을 의미한다. 예컨대 패턴 매칭을 이용해 다음과 같이 튜플의 순서를 뒤집을 수도 있다.
+
+```elixir
+swap = fn {a, b} -> {b, a} end
+swap.({6, 8})
+# {8, 6}
+```
+
+다음 절에서 구현이 여러 개인 함수를 알아보며 이 패턴 매칭 기능을 다시 사용해보자.
+
+## 연습문제
+
+다음과 같이 동작하는 함수를 만들어 실행해보자.
+
+```
+list_concat.([:a, :b], [:c, :d])
+# => [:a, :b, :c, :d]
+```
+
+```elixir
+list_concat = fn list1, list2 -> list1 ++ list2 end
+result = list_concat.([:a, :b], [:c, :d])
+```
+
+```
+sum.(1, 2, 3)
+# => 6
+```
+
+```elixir
+sum = fn a, b, c -> a + b + c end
+result = sum.(1, 2, 3)
+```
+
+```
+pair_tuple_to_list.({ 1234, 5678 })
+# => [1234, 5678]
+```
+
+```elixir
+ExUnit.start()
+
+pair_tuple_to_list = fn tuple -> Tuple.to_list(tuple) end
+# 아직 배우지 않은 방법
+# Tuple.to_list는 튜플을 리스트로 변환하는 함수이다.
+result = pair_tuple_to_list.({1234, 5678})
+pair_tuple_to_list = fn {a, b} -> [a, b] end
+result = pair_tuple_to_list.({1234, 5678})
+
+defmodule ExTest do
+  use ExUnit.Case
+
+  test "pair_tuple_to_list.({ 1234, 5678 })
+# => [1234, 5678]" do
+    assert MyList.mapsum([1, 2, 3], &(&1 * &1)) == 14
+  end
+
+  test "iex> MyList.max([1,2003,3,4,102]) # 2003" do
+    assert MyList.max([1, 2003, 3, 4, 102]) == 2003
+  end
+end
+```
