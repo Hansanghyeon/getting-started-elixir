@@ -1,0 +1,142 @@
+# 처음배우는엘릭서프로그래밍
+
+## 10.1 Enum: 컬렉션 처리하기
+
+`Enum`은 엘릭서에서 가장 많이 사용하는 라이브러리일 것이다. 컬렉션을 순회하고, 특정 항목을 필터링하고, 합치거나 나누는 등 컬렉션을 다루는 여러 연산에서 사용한다. `Enum` 모듈을 주로 사용하는 작업은 다음과 같다.
+
+```elixir
+# 다른 컬렉션 리스트로 바꾸기
+list = Enum.to_list(1..5)
+```
+
+```elixir
+# 컬렉션 연결하기
+Enum.concat([1, 2, 3], [4, 5, 6])
+```
+
+```elixir
+# 기존 컬렉션의 각 값에서 함수를 적용해 새 컬렉션 만들기
+IO.inspect(Enum.map(list, &(&1 * 10)))
+IO.inspect(Enum.map(list, &String.duplicate("*", &1)))
+```
+
+```elixir
+# 위치 또는 조건으로 값을 선택하기
+IO.inspect(Enum.at(10..20, 3))
+IO.inspect(Enum.at(10..20, 20))
+IO.inspect(Enum.at(10..20, 20, :no_one_here))
+IO.inspect(Enum.filter(list, &(&1 > 2)))
+# is_even을 사용하기 위해 호출
+require Integer
+IO.inspect(Enum.filter(list, &Integer.is_even/1))
+IO.inspect(Enum.reject(list, &Integer.is_even/1))
+```
+
+```elixir
+# 값 정렬, 비교하기
+IO.inspect(Enum.sort(["there", "was", "a", "crooked", "man"]))
+
+IO.inspect(
+  Enum.sort(
+    ["there", "was", "a", "crooked", "man"],
+    &(String.length(&1) <= String.length(&2))
+  )
+)
+
+IO.inspect(Enum.max(["there", "was", "a", "crooked", "man"]))
+# Enum.max ["there", "was", "a", "crooked", "man"] ?? 왜 was가 나올까?
+IO.inspect(Enum.max_by(["there", "was", "a", "crooked", "man"], &String.length/1))
+```
+
+```elixir
+# 컬렉션 나누기
+IO.inspect(Enum.take(list, 3))
+IO.inspect(Enum.take_every(list, 2))
+IO.inspect(Enum.take_while(list, &(&1 < 4)))
+IO.inspect(Enum.split(list, 3))
+IO.inspect(Enum.split_while(list, &(&1 < 4)))
+```
+
+```elixir
+# 컬렉션의 값을 합쳐 문자열로 만들기
+IO.inspect(Enum.join(list))
+IO.inspect(Enum.join(list, ", "))
+```
+
+```elixir
+# 명제
+IO.inspect(Enum.all?(list, &(&1 < 4)))
+IO.inspect(Enum.any?(list, &(&1 < 4)))
+IO.inspect(Enum.member?(list, 4))
+IO.inspect(Enum.empty?(list))
+```
+
+```elixir
+# 컬렉션 합치기
+IO.inspect(Enum.zip(list, [:a, :b, :c]))
+IO.inspect(Enum.with_index(["once", "upon", "a", "time"]))
+```
+
+```elixir
+# 각 항목을 합쳐 하나의 값으로 만들기
+IO.inspect(Enum.reduce(1..100, &(&1 + &2)))
+
+IO.inspect(
+  Enum.reduce(["now", "is", "the", "time"], fn word, longest ->
+    if String.length(word) > String.length(longest) do
+      word
+    else
+      longest
+    end
+  end)
+)
+
+IO.inspect(
+  Enum.reduce(["now", "is", "the", "time"], fn word, longest ->
+    if String.length(word) > longest,
+      do: String.length(word),
+      else: longest
+  end)
+)
+```
+
+```elixir
+# 트럼프 카드 다루기
+import Enum
+deck = for rank <- ~c"23456789TJQKA", suit <- ~c"CDHS", do: [suit, rank]
+IO.inspect(deck |> shuffle |> take(13))
+IO.inspect(deck |> shuffle |> chunk_every(13))
+```
+
+## 10.1.1 정렬에 관한 팁
+
+'값 정렬, 비교하기' 예시에서 살펴본 `sort` 함수를 다시 한번 보자.
+
+```elixir
+Enum.sort(
+  ["there", "was", "a", "crooked", "man"],
+  &(String.length(&1) <= String.length(&2))
+)
+```
+
+정렬을 안정적으로 하려면 `<` 대신 `<=`를 사용해야한다.
+
+## 연습문제
+
+라이브러리나 리스트 컴프리헨션 문을 사용하지 않고 `Enum`의 모듈 `all?` `each` `filter` `split` `take` 함수를 직접 만들어 보자. `filter`를 구현하려면 if문이 필요하다. if문의 문법은 다음과 같다.
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+if condition do
+  expression(s)
+else
+  expression(s)
+end
+```
+
+<!-- livebook:{"break_markdown":true} -->
+
+**[어려움]** `flatten(list)` 함수를 구현해보자. 이 함수는 리스트를 받는데, 리스트의 하위 리스트를 포함할 수 있으며 하위 리스트는 또 다른 하위 리스트를 포함할 수 있다. 리스트의 최대 깊이에는 제한이 없다. 반환되는 값은 각 요소를 순서대로 늫어놓은 1차원 리스트여야 한다.
+
+* 힌트: 순서가 올바른 결과를 얻으러면 `Enum.reverse`를 사용해야 한다.
