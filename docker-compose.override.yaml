@@ -1,0 +1,19 @@
+version: "3.9"
+
+
+networks:
+  traefik_proxy:
+    external: true
+
+services:
+  livebook:
+    networks:
+      - traefik_proxy
+      - default
+    labels:
+      - traefik.enable=true
+      ## HTTP Routers
+      - traefik.http.routers.${SERVICE}.entrypoints=https
+      - traefik.http.routers.${SERVICE}.rule=Host(`${DOMAIN}`)
+      - traefik.http.services.${SERVICE}.loadbalancer.server.port=8090
+      - traefik.http.routers.${SERVICE}.tls.certresolver=leresolver
