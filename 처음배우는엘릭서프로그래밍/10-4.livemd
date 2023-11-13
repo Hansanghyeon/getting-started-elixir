@@ -86,3 +86,77 @@ for <<ch <- "hello">>, do: <<ch>>
 for <<(<<b1::size(2), b2::size(3), b3::size(3)>> <- "hello")>>,
   do: "0#{b1}#{b2}#{b3}"
 ```
+
+## 10.4.2 컴프리헨션 문의 스코프
+
+컴프리헨션 문 내에서 할당하는 변수는 해당 컴프리헨션 문 안에서만 사용할 수 있다. 외부 변수의 값에는 영향을 미치지 않는다.
+
+```elixir
+name = "Dave"
+for name <- ["cat", "dog"], do: String.upcase(name)
+name
+```
+
+## 10.4.3 컴프리헨션 문이 반환하는 값
+
+지금까지 본 컴프리헨션 문은 라스트를 반환했으며, 리스트에 포함되는 값은 컴프리헨션 문의 각 반복에서 `do` 블록이 반환하는 값이었다. `info:` 파라미터를 사용해 이 동작을 바꿀 수 있다. `into:` 파라미터는 결과를 저장할 컬렉션을 받는다. 예를 들어 결과를 맵으로 받을 수도 있다.
+
+```elixir
+for x <- ~w{ cat dog }, into: %{}, do: {x, String.upcase(x)}
+```
+
+`Map.new`를 쓰면 의미가 좀 더 명확하게 전달될 것이다.
+
+```elixir
+for x <- ~w{ cat dog }, into: Map.new(), do: {x, String.upcase(x)}
+```
+
+컬렉션이 꼭 비어 있을 필요는 없다
+
+```elixir
+for x <- ~w{ cat dog }, into: %{"ant" => "ANT"}, do: {x, String.upcase(x)}
+```
+
+`into:` 옵션은 `Callectable` 프로토콜을 구현한 값을 받는다(프로코톨은 서로 다른 자료형 사이의 공통적인 동작을 정의한 것으로 24장에서 다시 살펴본다). `Collectable` 프로토콜을 구현한 타입에는
+
+* 리스트
+* 바이너리
+* 함수
+* 맵
+* 파일
+* 해시 딕셔너리
+* 해시 셋
+* IO 스트림
+
+등이 있다. 따라서 다음과 같은 코드도 작성할 수 있다.
+
+```elixir
+for x <- ~w{ cat dog }, into: IO.stream(:stdio, :line), do: "<<#{x}>>\n"
+```
+
+## 연습문제
+
+### 2부터 n까지의 소수 리스트를 반환하는 함수를 만들어보자. 7장 마지막 연습문제에서 작서한 `span` 함수와 리스트 컴프리헨션 문을 이용하자.
+
+```elixir
+defmodule Mylist do
+  def span(from, to) when from <= to do
+    [from | span(from + 1, to)]
+  end
+
+  def span(from, to) when from > to do
+    []
+  end
+
+  def prime(n) do
+    for i <- span(2, n), is_prime(i), do: i
+  end
+
+  defp is_prime(n) do
+    for i <- span(2, n - 1), rem(n, i) == 0, do: false
+    true
+  end
+end
+
+IO.inspect(Mylist.prime(20))
+```
