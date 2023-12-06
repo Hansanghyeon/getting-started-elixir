@@ -282,6 +282,32 @@ IO.inspect(Parse.number(~c"+a"))
 
 <!-- livebook:{"break_markdown":true} -->
 
+```elixir
+defmodule TestFn do
+  def is_printable_ascii(str) do
+    str
+    |> String.codepoints()
+    |> Enum.all?(fn ch -> ch |> String.to_charlist() |> hd() |> in_range?(32, 126) end)
+  end
+
+  defp in_range?(value, min, max) do
+    min <= value and value <= max
+  end
+end
+
+ExUnit.start()
+
+defmodule Ex11_1_test do
+  use ExUnit.Case
+
+  test "1번문제" do
+    target = ~c"test~"
+    result = TestFn.is_printable_ascii(target)
+    assert result = true
+  end
+end
+```
+
 ### 11-2
 
 파라미터로 받은 두 값이 서로 애너그램 관계이면 true를 반환하는 anagram?(word1, word2) 함수를 만들어보자.

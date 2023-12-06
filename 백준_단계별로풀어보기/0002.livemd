@@ -1,0 +1,42 @@
+# A+B
+
+## 설명
+
+| 시간 제한 | 메모리 제한 | 제출 | 정답 | 맞힌 사람 | 정답 비율 |
+| ------------- | ---------------- | ------ | ------ | ------------- | ------------- |
+| 2 초         | 128 MB           | 979444 | 389463 | 270156        | 39.593%       |
+
+### 문제
+
+두 정수 A와 B를 입력받은 다음, A+B를 출력하는 프로그램을 작성하시오.
+
+### 입력
+
+첫째 줄에 A와 B가 주어진다. (0 < A, B < 10)
+
+### 출력
+
+첫째 줄에 A+B를 출력한다.
+
+```elixir
+defmodule Calculator do
+  def add(a, b) do
+    a + b
+  end
+end
+
+## 테스트코드
+ExUnit.start(auto_run: false)
+
+defmodule CalcutorTest do
+  use ExUnit.Case, async: false
+
+  describe "두 정수 A와 B를 입력받은 다음, A+B를 출력하는 프로그램을 작성하시오." do
+    test "1 2" do
+      assert Calculator.add(1, 2) == 3
+    end
+  end
+end
+
+ExUnit.run()
+```
